@@ -3,103 +3,201 @@
 	<head>
 
 		<meta charset="UTF-8"/>
-		<title>Coœtam</title>
+		<title>Schrodinger</title>
 		<style type="text/css">
 			
 			@font-face {
 				font-family: 'Greek';
 				src: url('fonts/greek.ttf');
 			}
+
+			body {
+				background: #222;
+				color: #eee;
+			}
+
 			.container {
 				overflow: hidden;
-				border: 2px solid #00ffff;
-				padding: 20px 20px 20px 20px;
-				width: 90%;
-				height: 470px;
-				margin: auto;
+				border: 1px solid #666;
+				padding: 0;
+				width: 1100px;
+				margin: 20px auto;
+				background: #333;
 			}
-			
-			.container .left {
-				float: left;
-				width: 50%;
-			}
-			
-			.container .right {
+
+			.container .main {
 				overflow: hidden;
-				float: right;
-				width: 45%;
 			}
-			
-			.container .right .first {
+
+			.container .main .animation {
+				width: 600px;
 				float: left;
-				width: 40%;
-				margin: auto;
+				border-right: 1px solid #666;
 			}
-			.container .right .second {
-				float: right;
-				width: 40%;
-				margin: auto;
+
+			.container .main .actions {
+				padding: 10px;
+			}
+
+			.container .main .actions button {
+				width: 100px;
+				background: #222;
+				border: 1px solid #555;
+				padding: 10px;
+				color: #87CEEB;
+				text-transform: uppercase;
+				font: bold 12px Arial;
+			}
+
+			.container .main .actions .position {
+				margin-top: 5px;
+			}
+
+			.container .main .options {
+				width: 479px;
+				float: left;
+				padding: 10px;
+			}
+
+			.container .main .options h3 {
+				font-weight: normal;
+				color: #aaa;
+				border-bottom: 3px double #3f3f3f;
+				padding: 5px 0 10px;
+				margin: 0 0 20px;
+			}
+
+			.container .main .options .energy select {
+				margin-bottom: 10px;
+			}
+
+			.container .main .options .energy input {
+				width: 100px;
+				background: #222;
+				border: 1px solid #555;
+				padding: 10px;
+				color: #eee;
+				text-transform: uppercase;
+				font: bold 12px Arial;
+			}
+
+			.container .main .options .energy button {
+				background: #222;
+				border: 1px solid #555;
+				padding: 10px;
+				color: #87CEEB;
+				text-transform: uppercase;
+				font: bold 12px Arial;
+			}
+
+			.container .main .options .dialogs {
+				overflow: hidden;
+				width: 479px;
+				text-align: center;
+				margin-top: 30px;
+			}
+
+			.container .main .options .dialogs button {
+				display: block;
+				width: 100px;
+				margin: 10px auto;
+				background: #222;
+				border: 1px solid #555;
+				padding: 10px;
+				color: #87CEEB;
+				text-transform: uppercase;
+				font: bold 12px Arial;
+			}
+
+			.container .main .options .dialogs .energy {
+				float: left;
+				width: 239px;
+			}
+
+			.container .main .options .dialogs .speed {
+				float: left;
+				width: 240px;
+			}
+
+			.container .desc {
+				border-top: 1px solid #666;
+				padding: 30px;
+				font-size: 18px;
+			}
+
+			.container .desc .help {
+				color: #aaa;
+				border-bottom: 3px double #3f3f3f;
+				padding-bottom: 10px;
+				margin-bottom: 20px;
 			}
 		
 		</style>
 		<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>
 		
 	</head>
-	<body bgcolor="black">
-	<font color="white">
+	<body>
 		<div class="container">
-			<div class="left">
-				<canvas id="animation"></canvas>
-				<div>
-					<button id="play">PLAY</button>
-					<button id="pause">PAUSE</button>
-					<button id="stop">STOP</button>
-					<input type="checkbox" id="position">Position</input>
-					<select id="positionMode" style="width:70px;">
-						<option value="Re">$${Re(\Psi(x,t))}$$</option>
-						<option value="Im">$${Im(\Psi(x,t))}$$</option>
-						<option value="Mod">$${|\Psi(x,t)|}$$</option>
-					</select>
+			<div class="main">
+				<div class="animation">
+					<canvas id="animation"></canvas>
+					<div class="actions">
+						<button id="play">PLAY</button>
+						<button id="pause">PAUSE</button>
+						<button id="stop">STOP</button>
+						<div class="position">
+							<label>
+								<input type="checkbox" id="position"/> Position
+							</label>
+							<select id="positionMode">
+								<option value="Re">$${Re(\Psi(x,t))}$$</option>
+								<option value="Im">$${Im(\Psi(x,t))}$$</option>
+								<option value="Mod">$${|\Psi(x,t)|}$$</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="options">
+					<div class="energy">
+						<h3>Energy Levels</h3>
+						<select id="energyLevels" multiple style="width:70px; height:50px;">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select><br/>
+						<input type="text" id="energyValue" />
+						<button id="addEnergyLevel">Add energy Level</button>
+					</div>
+					<div class="dialogs">
+						<div class="energy">
+							<input type="text" value="75" class="dial" id="knob"/>
+							<button id="setEnergy">Set Energy</button>
+						</div>
+						<div class="speed">
+							<input type="text" value="50" class="dial2" id="speedKnob"/>
+							<button id="setSpeed">Set Speed</button>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="right">
-				<div class="first">
-					Energy Levels:
-					<select id="energyLevels" multiple style="width:70px; height:50px;">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-					</select>
-					<input id="energyValue" style="width:70px;"></input>
-					<button id="addEnergyLevel">Add energy Level</button>
-					<input type="text" value="75" class="dial" id="knob" >
-					<button id="setEnergy">Set Energy</button>
-				</div>
-				<div class="second">
-					<input type="text" value="50" class="dial2" id="speedKnob" >
-					<button id="setSpeed">Set Speed</button>
-				</div>
-			</div>
-		</div>
-		<div>	
-			The solution of the Schrodinger equation for the following potential:
+			<div class="desc">
+				<p class="help">The solution of the Schrodinger equation for the following potential:</p>
 				$$V(x) =\begin{cases}
 				\infty,  & x\in (-\infty,0) \\
 				0, & x\in (0,a) \\
 				\infty, & x\in (a,+\infty)
 				\end{cases}$$
-			for positional representation it is:
+				<p class="help">for positional representation it is:</p>
 				$$\Psi(x,t) = \begin{cases}
 				0 ,  & x\in (-\infty,0) \\
 				\sum_{n}^{}c_{n}\sqrt{\frac{2}{a}}sin\left ( \frac{n\Pi x}{a}\right )\left [ cos\left ( \frac{2\Pi E_{n}}{h}t \right )-isin\left ( \frac{2\Pi E_{n}}{h}t \right ) \right ], & x\in (0,a) \\
 				0, & x\in (a,+\infty)
 				\end{cases}$$
-			where:
-			$$E_{n} = \frac{h_{}^{2}n_{}^{2}}{8ma_{}^{2}}$$
-			
-			
+				<p class="help">where:</p>
+				$$E_{n} = \frac{h_{}^{2}n_{}^{2}}{8ma_{}^{2}}$$
+			</div>
 		</div>
 		
 		<script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
@@ -110,11 +208,13 @@
 	
 		
 		$(".dial").knob({
-			'width':100
+			width: 100,
+			height: 100
 		});
 		
 		$(".dial2").knob({
-			'width':100
+			width: 100,
+			height: 100
 		});
 		
 		});
@@ -285,7 +385,7 @@
 			var animation = function(c) {
 				
 					c.clearRect(0, 0, canvas.width, canvas.height);
-					c.fillStyle="black";
+					c.fillStyle = '#222';
 					c.fillRect(0, 0, canvas.width, canvas.height);
 					c.beginPath();
 					
@@ -365,6 +465,5 @@
 			};
 			
 		</script>
-		</font>
 	</body>
 </html>
