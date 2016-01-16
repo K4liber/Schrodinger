@@ -397,7 +397,7 @@
 					//Uklad wspolrzednych
 					c.beginPath();
 					
-					c.strokeStyle = '#ffffff';
+					c.strokeStyle = "white";
 					
 					c.moveTo(105,15);
 					c.lineTo(100,10);
@@ -425,7 +425,8 @@
 					c.fillStyle = "white";
 					c.fillText("0",95,canvas.height/2-10);
 					c.fillText("a",canvas.width-105,canvas.height/2-10);
-					
+					c.stroke();
+					c.beginPath();
 					var modeValue = positionMode.value;
 					
 					if(positionCheckBox.checked == true){
