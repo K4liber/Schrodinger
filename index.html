@@ -36,6 +36,7 @@
 			}
 
 			.container .main .actions {
+				text-align:center;
 				padding: 10px;
 			}
 
@@ -160,7 +161,7 @@
 				<div class="options">
 					<div class="energy">
 						<h3>Energy Levels</h3>
-						<select id="energyLevels" multiple style="width:70px; height:50px;">
+						<select id="energyLevels" multiple style="width:70px; height:120px;">
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="3">3</option>
@@ -433,17 +434,17 @@
 						c.fillText("x",canvas.width-25,canvas.height/2-10);
 						switch(modeValue){
 							case "Re":
-								c.fillText("Re",36,17);
+								c.fillText("Re",36,22);
 								break;
 							case "Im":
-								c.fillText("Im",39,17);
+								c.fillText("Im",39,22);
 								break;
 							case "Mod":
-								c.fillText("Mod",21,17);
+								c.fillText("Mod",21,22);
 								break;
 						}
 						c.font = "22px Greek";
-						c.fillText("C",65,17);
+						c.fillText("C",65,22);
 						
 						
 						c.stroke();
