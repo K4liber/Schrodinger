@@ -244,13 +244,15 @@
 				positionMode = document.getElementById('positionMode');
 				
 			var constantValues = [];
-			var speed = speedKnob.value;
+			var speed = parseInt(speedKnob.value) || 100;
 			
 			speedButton.onclick = function() {
-				speed = speedKnob.value;
-				console.log(speed);
-				interval = setInterval(intervalFun, parseInt(speed));
-			}
+				var val = parseInt(speedKnob.value);
+				if(val != 0)
+					speed = val;
+				clearInterval(interval);
+				interval = setInterval(intervalFun, parseInt(1000 * (1 / speed)));
+			};
 			
 			for(var i = 0; i < select.options.length; i++) {
 				var ar = new Array(2);
