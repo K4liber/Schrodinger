@@ -161,21 +161,26 @@
 				<div class="options">
 					<div class="energy">
 						<h3>Energy Levels</h3>
-						<select id="energyLevels" multiple style="width:70px; height:120px;">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-						</select><br/>
+						<div style="overflow: hidden; width: 400px;">
+							<div style="float: left; width: 70px;">
+								<select id="energyLevels" multiple style="width:60px; height:120px;">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</div>
+							<div style="float: left;">
+								<input type="text" value="75" class="dial" id="knob"/>
+							</div>
+						</div>
+						
+						<br/>
 						<input type="text" id="energyValue" />
-						<button id="addEnergyLevel">Add energy Level</button>
+						<button id="addEnergyLevel">Add excited state</button>
 					</div>
 					<div class="dialogs">
-						<div class="energy">
-							<input type="text" value="75" class="dial" id="knob"/>
-							<button id="setEnergy">Set Energy</button>
-						</div>
 						<div class="speed">
 							<input type="text" value="50" class="dial2" id="speedKnob"/>
 							<button id="setSpeed">Set Speed</button>
@@ -198,6 +203,8 @@
 				\end{cases}$$
 				<p class="help">where:</p>
 				$$E_{n} = \frac{h_{}^{2}n_{}^{2}}{8ma_{}^{2}}$$
+				<p class="help"></p>
+				<p style="text-align:right">Made by Jasiek Bielecki</p>
 			</div>
 		</div>
 		
@@ -210,7 +217,17 @@
 		
 		$(".dial").knob({
 			width: 100,
-			height: 100
+			height: 100,
+			'change' : function (v) { 
+				for(var i = 0; i < select.options.length; i++) {
+					if(select.options[i].selected == true){
+						for(var l=0;l<constantValues.length;l++){
+							if(constantValues[l][0] == select.options[i].value)
+								 constantValues[l][1] = v;
+						}
+					}
+				}
+			}
 		});
 		
 		$(".dial2").knob({
@@ -238,7 +255,6 @@
 						animation(c);
 				},
 				select = document.getElementById('energyLevels');
-				setEnergyButton = document.getElementById('setEnergy');
 				knob = document.getElementById('knob');
 				speedKnob = document.getElementById('speedKnob');
 				speedButton = document.getElementById('setSpeed');
@@ -246,13 +262,15 @@
 				
 			var constantValues = [];
 			var speed = parseInt(speedKnob.value) || 100;
+			var timeSpeed = 1;
 			
 			speedButton.onclick = function() {
 				var val = parseInt(speedKnob.value);
 				if(val != 0)
 					speed = val;
 				clearInterval(interval);
-				interval = setInterval(intervalFun, parseInt(1000 * (1 / speed)));
+				interval = setInterval(intervalFun, parseInt(60));
+				timeSpeed = parseInt(speedKnob.value);
 			};
 			
 			for(var i = 0; i < select.options.length; i++) {
@@ -292,19 +310,6 @@
 				$('.dial')
 					.val(valueToSet)
 					.trigger('change');
-			}
-			
-			setEnergyButton.onclick = function() {
-				var valueToSet = knob.value;
-				
-				for(var i = 0; i < select.options.length; i++) {
-					if(select.options[i].selected == true){
-						for(var l=0;l<constantValues.length;l++){
-							if(constantValues[l][0] == select.options[i].value)
-								 constantValues[l][1] = valueToSet;
-						}
-					}
-				}
 			}
 			
 			addEnergyButton.onclick = function() {
@@ -353,33 +358,55 @@
 				switch(modeValue){
 					case "Re":
 					{
+						var numberOfN = 0;
 						for(var i in constantValues) {
 							//if(typeof constantValues[i] == 'undefined') continue;
 							if(constantValues[i][1] != 0){
+								numberOfN = numberOfN + Math.pow(constantValues[i][1],2);
 								valueToReturn += constantValues[i][1]*(-1)*Math.sin(PI*constantValues[i][0]*x/400)*Math.cos(constantValues[i][0]*constantValues[i][0]*t/1000);
 							}
 						}
+						valueToReturn = 100*valueToReturn/Math.pow(numberOfN,0.5);
 					}
 					break;
 					case "Im":
 					{
+						var numberOfN = 0;
 						for(var i in constantValues) {
 							//if(typeof constantValues[i] == 'undefined') continue;
 							if(constantValues[i][1] != 0){
+								numberOfN = numberOfN + Math.pow(constantValues[i][1],2);
 								valueToReturn += constantValues[i][1]*Math.sin(PI*constantValues[i][0]*x/400)*Math.sin(constantValues[i][0]*constantValues[i][0]*t/1000);
 							}
 						}
+						valueToReturn = 100*valueToReturn/Math.pow(numberOfN,0.5);
 					}
 					break;
 					case "Mod":
 					{
+						var numberOfN = 0;
 						for(var i in constantValues) {
 							//if(typeof constantValues[i] == 'undefined') continue;
-							if(constantValues[i][1] != 0){
-								valueToReturn += constantValues[i][1]*Math.sin(PI*constantValues[i][0]*x/400);
+							if(parseInt(constantValues[i][1]) != 0){
+							
+								var actualNTime = constantValues[i][0]*constantValues[i][0]*t/1000;
+								var actualCn = constantValues[i][1];
+								var actualN = constantValues[i][0];
+								
+								for(var l in constantValues) {
+									if(parseInt(constantValues[l][1]) != 0){
+										var modulo = Math.pow(Math.pow(Math.pow(actualCn,2) + Math.pow(constantValues[l][1],2),2),0.5)/3;
+										var actualMTime = constantValues[l][0]*constantValues[l][0]*t/1000;
+										var reTimePart = Math.cos(actualNTime)*Math.cos(actualMTime)+Math.sin(actualNTime)*Math.sin(actualMTime);
+										var imgTimePart = Math.cos(actualNTime)*Math.sin(actualMTime)-Math.sin(actualNTime)*Math.cos(actualMTime);
+										var timePart = reTimePart + imgTimePart;
+										valueToReturn += modulo*Math.sin(PI*constantValues[l][0]*x/400)*Math.sin(PI*actualN*x/400)*timePart;
+									}
+								}
+								numberOfN = numberOfN + Math.pow(constantValues[i][1],2);
 							}
 						}
-						valueToReturn = -Math.abs(valueToReturn);
+						valueToReturn = -100*Math.abs(valueToReturn)/numberOfN;
 					}
 					break;
 				}
@@ -435,17 +462,20 @@
 						c.fillText("x",canvas.width-25,canvas.height/2-10);
 						switch(modeValue){
 							case "Re":
-								c.fillText("Re",36,22);
+								c.fillText("Re",22,35);
 								break;
 							case "Im":
-								c.fillText("Im",39,22);
+								c.fillText("Im",25,35);
 								break;
 							case "Mod":
-								c.fillText("Mod",21,22);
+								c.fillText("|",43,35);
+								c.fillText("|",71,35);
+								c.font = "12px Arial";
+								c.fillText("2",79,25);
 								break;
 						}
 						c.font = "22px Greek";
-						c.fillText("C",65,22);
+						c.fillText("C",51,35);
 						
 						
 						c.stroke();
@@ -455,7 +485,7 @@
 						for(var x=100;x<canvas.width-100;x++){
 							
 							c.lineTo(x,canvas.height/2+canvas.height/400*xFuntionValue(x-100,t));
-							t+=10000;
+							t+=timeSpeed/1000;
 							
 						}
 						c.moveTo(10,canvas.height/2);
